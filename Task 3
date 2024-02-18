@@ -1,0 +1,64 @@
+#include <iostream>
+using namespace std;
+#include <vector>
+#include <string>
+#include <map>
+#include <cmath> // For math functions
+
+struct MilkingSession {
+    std::string cowID;
+    double yield;
+};
+
+void addMilkingSession(std::vector<MilkingSession>& sessions, const std::string& cowID, double yield) {
+    sessions.push_back(MilkingSession{cowID, yield});
+}
+
+void identifyAndDisplaySpecialCases(const std::vector<MilkingSession>& sessions) {
+    std::map<std::string, double> totalYieldsPerCow;
+    std::map<std::string, int> lowYieldDaysPerCow;
+    double highestYield = 0;
+    std::string mostProductiveCow;
+
+    for (const auto& session : sessions) {
+        totalYieldsPerCow[session.cowID] += session.yield;
+        if (session.yield < 12) {
+            lowYieldDaysPerCow[session.cowID]++;
+        }
+        
+        if (totalYieldsPerCow[session.cowID] > highestYield) {
+            highestYield = totalYieldsPerCow[session.cowID];
+            mostProductiveCow = session.cowID;
+        }
+    }
+
+    std::cout << "Most productive cow: " << mostProductiveCow << " with a total yield of "
+              << std::round(totalYieldsPerCow[mostProductiveCow]) << " litres.\n";
+
+    std::cout << "Cows with less than 12 litres of milk for four or more days:\n";
+    bool found = false;
+    for (const auto& pair : lowYieldDaysPerCow) {
+        if (pair.second >= 4) {
+            std::cout << "Cow ID: " << pair.first << "\n";
+            found = true;
+        }
+    }
+    if (!found) {
+        std::cout << "None\n";
+    }
+}
+
+int main() {
+    std::vector<MilkingSession> milkingSessions;
+
+    // Example: Adding milking session records
+    addMilkingSession(milkingSessions, "001", 10.5);
+    addMilkingSession(milkingSessions, "002", 12.3);
+    addMilkingSession(milkingSessions, "001", 11.2); // Additional session for cow 001
+    addMilkingSession(milkingSessions, "002", 13.4); // Additional session for cow 002
+    // More records can be added here
+
+    identifyAndDisplaySpecialCases(milkingSessions);
+
+    return 0;
+}
