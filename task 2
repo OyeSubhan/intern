@@ -1,0 +1,48 @@
+#include <iostream>
+using namespace std;
+#include <vector>
+#include <string>
+#include <map>
+#include <cmath> // For math functions
+
+struct MilkingSession {
+    std::string cowID;
+    double yield;
+};
+
+void addMilkingSession(std::vector<MilkingSession>& sessions, const std::string& cowID, double yield) {
+    sessions.push_back(MilkingSession{cowID, yield});
+}
+
+void calculateAndDisplayStatistics(const std::vector<MilkingSession>& sessions) {
+    std::map<std::string, double> totalYieldsPerCow;
+    double totalYield = 0;
+
+    // Aggregate yields by cow and calculate total yield
+    for (const auto& session : sessions) {
+        totalYieldsPerCow[session.cowID] += session.yield;
+        totalYield += session.yield;
+    }
+
+    // Calculate total weekly volume and average yield per cow
+    double averageYieldPerCow = totalYield / totalYieldsPerCow.size();
+
+    // Display the statistics, rounded to the nearest whole litre
+    std::cout << "Total weekly volume of milk for the herd: " << std::round(totalYield) << " litres\n";
+    std::cout << "Average yield per cow in a week: " << std::round(averageYieldPerCow) << " litres\n";
+}
+
+int main() {
+    std::vector<MilkingSession> milkingSessions;
+
+    // Example: Adding milking session records
+    addMilkingSession(milkingSessions, "001", 10.5);
+    addMilkingSession(milkingSessions, "002", 12.3);
+    addMilkingSession(milkingSessions, "001", 11.2); // Additional session for cow 001
+    addMilkingSession(milkingSessions, "002", 13.4); // Additional session for cow 002
+    // More records can be added here
+
+    calculateAndDisplayStatistics(milkingSessions);
+
+    return 0;
+}
